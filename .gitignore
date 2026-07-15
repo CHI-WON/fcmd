@@ -6,4 +6,5 @@ coverage/
 .env.*
 !.env.example
 .DS_Store
-.CLAUDE.md
+CLAUDE.md
+fcmd-development-spec.md
