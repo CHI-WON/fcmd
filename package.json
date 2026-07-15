@@ -1,5 +1,5 @@
 {
-  "name": "@fw/fcmd",
+  "name": "fcmd-ai",
   "version": "0.1.0",
   "description": "An AI-powered CLI that turns natural language into safe terminal command suggestions.",
   "license": "MIT",
@@ -14,7 +14,7 @@
     }
   },
   "bin": {
-    "fcmd": "./dist/cli.js"
+    "fcmd": "dist/cli.js"
   },
   "files": [
     "dist"

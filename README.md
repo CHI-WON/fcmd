@@ -17,7 +17,7 @@
 发布到 npm 后：
 
 ```bash
-npm install -g @fw/fcmd
+npm install -g fcmd-ai
 fcmd init
 ```
 
