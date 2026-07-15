@@ -1,0 +1,60 @@
+{
+  "name": "fcmd",
+  "version": "0.1.0",
+  "description": "An AI-powered CLI that turns natural language into safe terminal command suggestions.",
+  "license": "MIT",
+  "author": "Felix Wang",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "bin": {
+    "fcmd": "./dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "cli",
+    "ai",
+    "typescript",
+    "terminal",
+    "openai-compatible"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CHI-WON/fcmd.git"
+  },
+  "bugs": {
+    "url": "https://github.com/CHI-WON/fcmd/issues"
+  },
+  "homepage": "https://github.com/CHI-WON/fcmd#readme",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/cli.js",
+    "dev": "npm run build && node dist/cli.js",
+    "test": "npm run build && vitest run",
+    "test:watch": "vitest",
+    "prepack": "npm run build",
+    "prepublishOnly": "npm test"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1",
+    "typescript": "^7.0.2",
+    "vitest": "^3.2.7"
+  },
+  "dependencies": {
+    "@inquirer/prompts": "^8.5.2",
+    "commander": "^15.0.0",
+    "picocolors": "^1.1.1",
+    "zod": "^4.4.3"
+  }
+}
