@@ -1,5 +1,5 @@
 {
-  "name": "fcmd",
+  "name": "@fw/fcmd",
   "version": "0.1.0",
   "description": "An AI-powered CLI that turns natural language into safe terminal command suggestions.",
   "license": "MIT",
@@ -37,6 +37,9 @@
     "url": "https://github.com/CHI-WON/fcmd/issues"
   },
   "homepage": "https://github.com/CHI-WON/fcmd#readme",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc",
     "start": "node dist/cli.js",
