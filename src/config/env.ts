@@ -22,19 +22,19 @@ export function readEnv(env: NodeJS.ProcessEnv = process.env): FcmdConfig {
 
   if (!apiKey) {
     throw new Error(
-      "缺少环境变量 FCMD_API_KEY。\n\n请先设置：\n  export FCMD_API_KEY=\"your-api-key\"",
+      "缺少环境变量 FCMD_API_KEY。请设置该环境变量，或运行 fcmd init。",
     );
   }
 
   if (!model) {
     throw new Error(
-      "缺少环境变量 FCMD_MODEL。\n\n请先设置：\n  export FCMD_MODEL=\"model-name\"",
+      "缺少环境变量 FCMD_MODEL。请设置该环境变量，或运行 fcmd init。",
     );
   }
 
   if (!baseUrl) {
     throw new Error(
-      "缺少环境变量 FCMD_BASE_URL。\n\n请先设置：\n  export FCMD_BASE_URL=\"https://...\"",
+      "缺少环境变量 FCMD_BASE_URL。请设置该环境变量，或运行 fcmd init。",
     );
   }
 

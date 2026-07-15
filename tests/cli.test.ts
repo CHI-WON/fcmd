@@ -24,13 +24,14 @@ describe("fcmd CLI", () => {
     expect(result.stdout).toContain("[request...]");
     expect(result.stdout).toContain("init");
     expect(result.stdout).toContain("--json");
+    expect(result.stdout).toContain("--shell");
   });
 
   it("显示版本号", () => {
     const result = runCli("--version");
 
     expect(result.status).toBe(0);
-    expect(result.stdout.trim()).toBe("0.1.0");
+    expect(result.stdout.trim()).toBe("0.1.1");
   });
 
   it("在没有输入需求时显示提示并以失败状态结束", () => {

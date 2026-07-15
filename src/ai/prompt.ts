@@ -1,3 +1,8 @@
+import {
+    detectRuntimeContext,
+    type RuntimeContext,
+} from "../platform/runtime.js";
+
 export const systemPrompt = `
 你是 fcmd，一个终端命令建议助手。
 
@@ -48,12 +53,25 @@ JSON 必须严格符合以下结构：
 安全规则：
 - 删除、覆盖、权限修改、结束进程等操作必须标记风险；
 - 对危险操作给出 warnings 或 notes；
+
+跨平台规则：
+- 用户消息会提供目标操作系统、Shell 和路径分隔符；
+- 所有命令、参数、路径和示例必须适用于该环境；
+- 不要混用 PowerShell、Command Prompt 与 POSIX Shell 的语法；
 `;
 
-export function buildUserPrompt(request: string): string {
+export function buildUserPrompt(
+    request: string,
+    runtime: RuntimeContext = detectRuntimeContext(),
+): string {
     return `
+目标运行环境：
+- 操作系统：${runtime.operatingSystem}
+- Shell：${runtime.shell}
+- 路径分隔符：${runtime.pathSeparator}
+
 用户想完成下面这项终端操作：
 ${request}
-请按照约定的 JSON 格式返回命令建议    
+请只推荐能在上述环境中直接运行的命令，并按照约定的 JSON 格式返回。
 `;
 }

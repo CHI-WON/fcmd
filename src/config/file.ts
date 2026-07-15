@@ -49,6 +49,7 @@ export async function readSavedConfig(
 export async function saveConfig(
   config: FcmdConfig,
   filePath: string = getConfigFilePath(),
+  platform: NodeJS.Platform = process.platform,
 ): Promise<void> {
   const result = savedConfigSchema.safeParse(config);
 
@@ -59,14 +60,29 @@ export async function saveConfig(
   const directory = dirname(filePath);
   const temporaryPath = `${filePath}.tmp`;
 
-  await mkdir(directory, { recursive: true, mode: 0o700 });
-  await chmod(directory, 0o700);
-  await writeFile(temporaryPath, JSON.stringify(result.data, null, 2), {
-    encoding: "utf8",
-    mode: 0o600,
-  });
+  await mkdir(directory, { recursive: true });
+
+  if (supportsPosixFilePermissions(platform)) {
+    await chmod(directory, 0o700);
+    await writeFile(temporaryPath, JSON.stringify(result.data, null, 2), {
+      encoding: "utf8",
+      mode: 0o600,
+    });
+  } else {
+    await writeFile(temporaryPath, JSON.stringify(result.data, null, 2), "utf8");
+  }
+
   await rename(temporaryPath, filePath);
-  await chmod(filePath, 0o600);
+
+  if (supportsPosixFilePermissions(platform)) {
+    await chmod(filePath, 0o600);
+  }
+}
+
+export function supportsPosixFilePermissions(
+  platform: NodeJS.Platform = process.platform,
+): boolean {
+  return platform !== "win32";
 }
 
 export async function deleteSavedConfig(

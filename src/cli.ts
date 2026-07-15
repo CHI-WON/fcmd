@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
-import { Command } from "commander";
+import { readFileSync } from "node:fs";
+import { Command, Option } from "commander";
 import { confirm } from "@inquirer/prompts";
 import { initializeConfig } from "./config/interactive.js";
 import { loadConfig } from "./config/load.js";
@@ -11,14 +12,25 @@ import {
 } from "./config/file.js";
 import { parseCommandRequest } from "./ai/parseCommandRequest.js";
 import { renderResult } from "./renderer/renderResult.js";
+import { detectRuntimeContext } from "./platform/runtime.js";
 
 const program = new Command();
 
 program
     .name("fcmd")
     .description("用 AI 将自然语言转换为终端命令建议")
-    .version("0.1.0", "-v, --version", "显示版本")
+    .version(readPackageVersion(), "-v, --version", "显示版本")
     .option("--json", "输出经过校验的 JSON 结果")
+    .addOption(
+        new Option("--shell <shell>", "指定生成命令所使用的 Shell").choices([
+            "powershell",
+            "cmd",
+            "zsh",
+            "bash",
+            "fish",
+            "sh",
+        ]),
+    )
     .argument("[request...]", "用自然语言描述想完成的终端操作");
 
 program
@@ -111,9 +123,14 @@ program.action(async (requestParts: string[] = []) => {
 
     try {
         const config = await loadConfig();
-        const response = await parseCommandRequest(request, config);
+        const options = program.opts<{ json?: boolean; shell?: string }>();
+        const runtime = detectRuntimeContext(process.platform, {
+            ...process.env,
+            ...(options.shell ? { FCMD_SHELL: options.shell } : {}),
+        });
+        const response = await parseCommandRequest(request, config, runtime);
 
-        if (program.opts<{ json?: boolean }>().json) {
+        if (options.json) {
             console.log(JSON.stringify(response, null, 2));
             return;
         }
@@ -136,4 +153,20 @@ function maskApiKey(apiKey: string): string {
     }
 
     return `****${apiKey.slice(-4)}`;
+}
+
+function readPackageVersion(): string {
+    const content = readFileSync(new URL("../package.json", import.meta.url), "utf8");
+    const packageData: unknown = JSON.parse(content);
+
+    if (
+        typeof packageData !== "object" ||
+        packageData === null ||
+        !("version" in packageData) ||
+        typeof packageData.version !== "string"
+    ) {
+        throw new Error("无法读取 package.json 中的版本号。");
+    }
+
+    return packageData.version;
 }

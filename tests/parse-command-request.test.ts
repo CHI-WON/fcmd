@@ -43,6 +43,26 @@ describe("parseCommandRequest", () => {
     );
   });
 
+  it("将指定的 Windows Shell 环境传给 AI", async () => {
+    requestChatCompletionMock.mockResolvedValue(JSON.stringify(validResponse));
+
+    await parseCommandRequest("查看当前目录", config, {
+      operatingSystem: "Windows",
+      shell: "Command Prompt",
+      pathSeparator: "\\",
+    });
+
+    expect(requestChatCompletionMock).toHaveBeenCalledWith(
+      config,
+      expect.arrayContaining([
+        expect.objectContaining({
+          role: "user",
+          content: expect.stringContaining("Shell：Command Prompt"),
+        }),
+      ]),
+    );
+  });
+
   it("拒绝空白的用户输入，且不调用 AI client", async () => {
     await expect(parseCommandRequest("   ", config)).rejects.toThrow(
       "请输入你想完成的操作。",

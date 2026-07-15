@@ -1,16 +1,24 @@
 import type { FcmdConfig } from "../config/env.js";
+import {
+    detectRuntimeContext,
+    type RuntimeContext,
+} from "../platform/runtime.js";
 import { requestChatCompletion } from "./client.js";
 import { buildUserPrompt, systemPrompt } from "./prompt.js";
 import { fcmdResponseSchema, type FcmdResponse } from "./schema.js";
 
-export async function parseCommandRequest(request: string, config: FcmdConfig): Promise<FcmdResponse> {
+export async function parseCommandRequest(
+    request: string,
+    config: FcmdConfig,
+    runtime: RuntimeContext = detectRuntimeContext(),
+): Promise<FcmdResponse> {
     if (!request.trim()) {
         throw new Error("请输入你想完成的操作。");
     }
 
     const messages = [
         { role: "system" as const, content: systemPrompt },
-        { role: "user" as const, content: buildUserPrompt(request) },
+        { role: "user" as const, content: buildUserPrompt(request, runtime) },
     ];
 
     const rawContent = await requestChatCompletion(config, messages);

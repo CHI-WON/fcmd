@@ -27,7 +27,7 @@
     "openai-compatible"
   ],
   "engines": {
-    "node": ">=20"
+    "node": ">=22.12.0"
   },
   "repository": {
     "type": "git",
