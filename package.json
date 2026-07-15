@@ -1,6 +1,6 @@
 {
   "name": "fcmd-ai",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "An AI-powered CLI that turns natural language into safe terminal command suggestions.",
   "license": "MIT",
   "author": "Felix Wang",

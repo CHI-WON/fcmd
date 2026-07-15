@@ -46,11 +46,25 @@ describe("requestChatCompletion", () => {
     });
   });
 
-  it("在 AI 服务返回非成功状态时给出友好错误", async () => {
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response("", { status: 401 })));
+  it("在 API Key 无效时显示 HTTP 状态和定位提示", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(new Response("", { status: 401 })),
+    );
 
     await expect(requestChatCompletion(config, messages)).rejects.toThrow(
-      "AI 服务请求失败",
+      "AI 服务请求失败（HTTP 401）。API Key 无效或已失效。",
+    );
+  });
+
+  it("在账户余额不足时显示充值提示", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(new Response("", { status: 402 })),
+    );
+
+    await expect(requestChatCompletion(config, messages)).rejects.toThrow(
+      "AI 服务请求失败（HTTP 402）。账户余额不足",
     );
   });
 

@@ -41,7 +41,7 @@ export async function requestChatCompletion(
     }
     
     if (!response.ok) {
-        throw new Error("AI 服务请求失败，请检查 API 配置或稍后重试。");
+        throw createHttpError(response.status);
     }
 
     interface ChatCompletionResponse {
@@ -84,4 +84,18 @@ export async function requestChatCompletion(
     }
 
     return content;
+}
+
+function createHttpError(status: number): Error {
+    const hints: Record<number, string> = {
+        400: "请检查模型名称和请求参数。",
+        401: "API Key 无效或已失效。",
+        402: "账户余额不足，请前往服务商控制台充值。",
+        403: "API Key 没有访问该模型的权限。",
+        404: "请检查服务地址和模型名称。",
+        429: "请求过于频繁或账户额度受限，请稍后重试。",
+    };
+    const hint = hints[status] ?? "请检查 API 配置或稍后重试。";
+
+    return new Error(`AI 服务请求失败（HTTP ${status}）。${hint}`);
 }
